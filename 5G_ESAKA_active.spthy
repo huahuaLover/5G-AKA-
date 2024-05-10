@@ -1,0 +1,77 @@
+theory 5G_ESAKA_Simplified_Privacy_Active
+begin
+
+builtins:
+	asymmetric-encryption,multiset,xor
+functions:
+        SHA256/2,
+        f1/2,
+        f5/2,
+        f2/2,
+        KDF/2   
+rule init_homeNet:
+  [Fr(~sk_HN)]
+  --[Once('homeNet') ]->
+  [!HSS(~sk_HN),!Pk(pk(~sk_HN)),
+	 Out(pk(~sk_HN))]
+rule supi_supply:
+  [Fr(~a),Fr(~b)]
+  --[Once('supiSupply')]->
+  [
+  !SUPI_Init(~a+~b),
+  SUPI(~a),
+  SUPI(diff(~a,~b))]
+rule add_subscription:
+  [!SUPI_Init(~supi+z),Fr(~k),!HSS(~sk_HN)]
+  --[Subscribe(~supi)]->
+  [!Ltk_Sym(~supi,~k)] 
+
+
+rule ue_send_attachReq:
+   let
+      suci=aenc{<~supi,~RAND>}pk_HN 
+   in
+   [!Ltk_Sym(~supi,~k),!Pk(pk_HN),Fr(~N),Fr(~RAND),Fr(~tid),Fr(~cid)]
+  --[Start_UE_Session(~supi)]->
+   [Out(<suci,~N>),St_UE(~tid,~supi,~k,suci,~N,~cid)]
+rule seaf_receive_attachReq:
+   let
+      suci=aenc{<~supi,~RAND>}pk(~sk_HN)
+      HNMAC=f1(~k,~R)
+      AK=f5(~k,~R)
+      SNMAC=SHA256(~N,HNMAC)
+      msgOut=<SNMAC,HNMAC XOR AK,~R>
+   in
+   [In(<suci,~N>),!HSS(~sk_HN),!Ltk_Sym(~supi,~k),Fr(~R)]
+  --[Start_SEAF_HN_Session(~sk_HN),Unique()]->
+   [Out(<msgOut>)]   
+rule ue_receive_success:
+   let
+      HNMAC=f1(~k,~R)
+      AK=f5(~k,~R)
+      SNMAC=SHA256(~N,HNMAC)
+      // Output
+      RES = f2(~k, ~R)
+      RES_star = KDF(RES, ~R)
+      msgOut = RES_star
+   in
+   [St_UE(~tid,~supi,~k,suci,~N,~cid),In(<SNMAC,HNMAC XOR AK,~R>),
+   !Ltk_Sym(~supi,~k),SUPI(~supi)]
+  --[UE_END()]->
+   [Out(msgOut)]
+restriction once:
+        " All a #i #j. Once(a)@i & Once(a)@j ==> #i = #j "
+restriction Unique:
+"All #i #j. Unique()@#i & Unique()@#j ==> #i = #j"
+restriction subscribe_once:
+	" All supi #i #j. Subscribe(supi)@i & Subscribe(supi)@j ==> (#i = #j)"
+lemma excutable:
+exists-trace
+"
+Ex #i. UE_END()@i
+   &(All UE1 UE2 #j #k. Start_UE_Session(UE1)@j &
+                        Start_UE_Session(UE2)@k ==> #j = #k)
+   &(All SH1 SH2 #j #k. Start_SEAF_HN_Session(SH1)@j &
+                        Start_SEAF_HN_Session(SH2)@k ==> #j = #k)                   
+"
+end
