@@ -6,9 +6,11 @@
 
 The folder contains the formal models of 5G-AKA改进协议 implemented with Tamarin, as well as screenshots of the formal analysis results.
 
-- **5G_ESAKA.spthy** contains the model used to analyze the authentication and secrecy of 5G-ESAKA.
-- **5G_ESAKA_Passive.spthy** contains the model used to analyze the privacy of 5G-ESAKA under passive attackers.
-- **5G_ESAKA_Active.spthy** contains the model used to analyze the privacy of 5G-ESAKA under active attackers.
+- **5G_AKA_Enhanced_Autn.spthy** contains the model used to analyze the authentication and secrecy of 5G-AKA-Enhanced.
+- **5G_AKA_Enhanced_Secret.spthy** contains the model used to analyze the secrecy of 5G-AKA-Enhanced.
+-  **5G_AKA_Enhanced_Fix.spthy** contains the model used to analyze the fix of 5G-AKA-Enhanced.
+- **5G_AKA_Enhanced_Passive.spthy** contains the model used to analyze the privacy of 5G-AKA-Enhanced under passive attackers.
+- **5G_AKA_Enhanced_Active.spthy** contains the model used to analyze the privacy of 5G-AKA-Enhanced under active attackers.
 
 ## How to run
 
