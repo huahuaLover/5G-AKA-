@@ -713,18 +713,7 @@ lemma weakagreement_ue_seaf[heuristic={weakagreement_ue_seaf_noRev}]:
 		==> (Ex t2 #j. Running(b,a, t2)@j)             
     "
 
- lemma weakagreement_ue_seaf_keyConf[heuristic={weakagreement_ue_seaf_noRev}]:
-    "
-      All a b t #i. CommitConf(a,b,<'UE','SEAF',t>)@i
-		==> (Ex t2 #j. Running(b,a, t2)@j)             
-    "   
- lemma injectiveagreement_ue_seaf_kseaf_keyConf[heuristic={weakagreement_ue_seaf_keyConf_noRev}]:
-   " All a b t #i. CommitConf(a,b,<'UE','SEAF',<'K_seaf', t>>)@i
-        ==> (Ex #j. Running(b,a,<'UE','SEAF',<'K_seaf', t>>)@j 
-               & j < i
-               & not (Ex a2 b2 #i2. CommitConf(a2,b2,<'UE','SEAF',<'K_seaf', t>>)@i2
-                            & not (#i2 = #i)))                    
-                            "    
+
     
 /******************SEAF-UE************/
 lemma injectiveagreement_seaf_ue_kseaf[heuristic={injectiveagreement_seaf_ue_kseaf}]:
@@ -812,38 +801,5 @@ lemma noninjectiveagreement_hss_seaf_supi[heuristic={noninjectiveagreement_hss_s
 " All a b t #i. Commit(a,b,<'HSS','SEAF',<'supi', t>>)@i
             ==> (Ex #j. Running(b,a,<'HSS','SEAF',<'supi', t>>)@j)
                    "
-/******************Secret****************/     
-lemma secrecy_seaf_kseaf[heuristic={secrecy_kseaf}]:
-    " All idSN t #i. Secret(<'SEAF', idSN>, 'key', t)@i
-        ==> not (Ex #j. K(t)@j)
-    "
-lemma secrecy_ue_kseaf[heuristic={secrecy_kseaf}]:
-    " All supi t #i. Secret(<'UE', supi>, 'key', t)@i
-        ==> not (Ex #j. K(t)@j)
-    "
-lemma secrecy_hss_kseaf:
-    " All idHN t #i. Secret(<'HSS', idHN>, 'key', t)@i
-        ==> not (Ex #j. K(t)@j)
-    "
-
-lemma secrecy_ue_k:
-    " All supi t #i. Secret(<'UE', supi>, 'k', t)@i
-        ==> not (Ex #j. K(t)@j)
-    "
-lemma secrecy_hss_k:
-    " All idHN t #i. Secret(<'HSS', idHN>, 'k', t)@i
-        ==> not (Ex #j. K(t)@j)
-    "
-lemma secrecy_seaf_supi:
-    " All idSN t #i. Secret(<'SEAF', idSN>, 'supi', t)@i
-        ==> not (Ex #j. K(t)@j)
-    "
-lemma secrecy_ue_supi:
-    " All supi t #i. Secret(<'UE', supi>, 'supi', t)@i
-        ==> not (Ex #j. K(t)@j)
-    "
-lemma secrecy_hss_supi:
-    " All idHN t #i. Secret(<'HSS', idHN>, 'supi', t)@i
-        ==> not (Ex #j. K(t)@j)
-    "                            
+                      
 end
